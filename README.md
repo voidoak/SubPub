@@ -9,6 +9,9 @@ This library uses a simple decorator system to subscribe bound methods to a give
 
 Example: A bound method subscribes to a given event, determined by its name.
 ```python
+from subpub import Events, TrackRefs
+
+
 class Adder(TrackRefs):
     @Events.subscribe()
     def on_nums_event(self, x: int, y: int, *, z: int) -> None:
