@@ -46,4 +46,4 @@ class C(TrackRefs):
 This example does conflict with the core concept of the library to provide support for side effect methods, but these methods can still be called, regardless of whether or not its event has been published to. Also, it is worth noting that decorators just as easily provide new behaviours to methods, besides manipulating its return value (eg. loggers).
 
 ### How can I contribute?
-You can always contact me [on Discord](https://discord.gg/5d7BzA6pWa), or create an issue on the repository for something you think should be fixed or added.
+You can always contact me [on Discord](https://discord.gg/5d7BzA6pWa), or create an issue on the repository for something you think should be fixed or added. This library is still very early in development. Any criticism or ideas are greatly welcomed.
