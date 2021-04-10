@@ -1,2 +1,1 @@
-from .events import Events
-from .track_refs import TrackRefs
+from .events import Events, TrackRefs

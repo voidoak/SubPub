@@ -1,30 +1,28 @@
-import typing as T
+import weakref
 
+from typing import Any, Callable
 from collections import defaultdict
+
 from .get_class import _getcls
+from .exceptions import SubNameError, EventNotFound
 
+class TrackRefs:
+    """Metaclass to give subclasses the ability to track all instances.
 
-class EventNotFound(Exception):
-    """Raised if event has not yet been subscribed by any bound methods"""
+    This allows for easy GC when the object is deleted or has no references left."""
 
-    def __init__(self, event: str) -> None:
-        super().__init__()
-        self.event = event
+    __refs__ = defaultdict(list)
 
-    def __str__(self) -> str:
-        return f"Unsubscribed event of type '{self.event}' cannot be published to."
+    def __init__(self):
+        self.__refs__[self.__class__].append(weakref.ref(self))
 
-
-class SubNameError(Exception):
-    """Raised if subscribed bound method does not follow proper naming format"""
-
-    def __init__(self, name: str) -> None:
-        super().__init__()
-        self.event = name
-
-    def __str__(self) -> str:
-        return "Subscribed method names must be prefixed with 'on_'; " \
-        f"possible solution: 'on_{self.event}'"
+    @classmethod
+    def get_instances(cls):
+        """generator method to yield instances of inputted class"""
+        for inst_ref in cls.__refs__[cls]:
+            inst = inst_ref()  # create instance from weak reference
+            if inst is not None:
+                yield inst
 
 
 class Events:
@@ -34,7 +32,7 @@ class Events:
     Publish an event by calling `Events.publish(event_name, *args, **kwargs)`.
     """
 
-    _subscriptions: dict[str, T.Callable] = defaultdict(list)
+    _subscriptions: dict[str, Callable] = defaultdict(list)
 
     @staticmethod
     def subscribe() -> None:
@@ -50,7 +48,7 @@ class Events:
         `Events.publish("get_request", ... )`
         """
 
-        def _sub_wrapper(func: T.Callable) -> T.Callable:
+        def _sub_wrapper(func: Callable) -> Callable:
             event = func.__name__  # get name of event
             subs = Events._subscriptions
 
@@ -65,7 +63,7 @@ class Events:
         return _sub_wrapper
 
     @staticmethod
-    def publish(event: str, *args: T.Any, **kwargs: T.Any) -> None:
+    def publish(event: str, *args: Any, **kwargs: Any) -> None:
         """Publish a given event `event` to listeners subscribed to the name of
         the event.
         """

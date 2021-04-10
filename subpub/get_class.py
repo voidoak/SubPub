@@ -1,8 +1,9 @@
-import typing as T
 import inspect, functools
 
+from typing import Callable
 
-def _getcls(mthd: T.Callable):
+
+def _getcls(mthd: Callable):
     """Get class to which a given method belongs to"""
 
     if isinstance(mthd, functools.partial):
