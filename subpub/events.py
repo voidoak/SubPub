@@ -46,6 +46,11 @@ class Events:
         Listener method names must be prefixed with `on_`, with the event name
         directly after; eg. `on_get_request`, which would be published to with
         `Events.publish("get_request", ... )`
+
+        Raises
+        ------
+        events.SubNameError
+            Raised if a subscribed method's name is not prefixed with `on_`, or if the length of its name is not greater than 3.
         """
 
         def _sub_wrapper(func: Callable) -> Callable:
@@ -66,6 +71,11 @@ class Events:
     def publish(event: str, *args: Any, **kwargs: Any) -> None:
         """Publish a given event `event` to listeners subscribed to the name of
         the event.
+
+        Raises
+        ------
+        events.EventNotFound
+            If event being published to has not previously been subscribed by any bound methods, this is raised.
         """
         subs = Events._subscriptions.get(event, None)
 
