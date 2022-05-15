@@ -17,5 +17,4 @@ class SubNameError(Exception):
         self.event = name
 
     def __str__(self) -> str:
-        return "Subscribed method names must be prefixed with 'on_'; " \
-        f"possible solution: 'on_{self.event}'"
+        return "Subscribed method names must be prefixed with 'on_'; possible solution: 'on_{self.event}'"
